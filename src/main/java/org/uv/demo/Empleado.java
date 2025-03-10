@@ -24,18 +24,19 @@ public class Empleado implements Serializable {
               allocationSize=1)
             
     Long clave;
-
+    @Column
     String nombre;
-    
+    @Column
     String direccion;
-    
+    @Column
     String telefono;
 
    
     
     @ManyToOne
     @JoinColumn(name = "clave",  insertable = false, updatable = false)
-    Departamento depto;
+    private Departamento depto;
+    
     public Long getClave() {
         return clave;
     }

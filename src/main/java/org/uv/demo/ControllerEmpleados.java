@@ -27,6 +27,8 @@ RepositoryEmpleados repositoryEmpleado;
     @Autowired
 RepositoryDepartamentos repositoryDepartamento;
     
+    
+    
     // lo responde get 
     @GetMapping()
     public List<Empleado> list() {
@@ -67,18 +69,16 @@ RepositoryDepartamentos repositoryDepartamento;
     // el request toma y convierte json a Empleado pojo , el api de web service lo hace automaticamente
     @PostMapping
     public ResponseEntity<Empleado> post(@RequestBody Empleado entrada) {
-        
-        
-        
         Optional<Departamento> depto= 
                 repositoryDepartamento.findById(entrada.getDepto().getClave());
         if (depto.isPresent()){
-            entrada.setDepto(depto.get());
-            Empleado empNew= repositoryEmpleado.save(entrada);
+               entrada.setDepto(depto.get());
+                Empleado empNew= repositoryEmpleado.save(entrada);
+               return ResponseEntity.ok(empNew);
             
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        
-        return ResponseEntity.ok();
     }
     
     @DeleteMapping("/{id}")
