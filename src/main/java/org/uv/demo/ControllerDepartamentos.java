@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @RestController
-@RequestMapping("/url")
+@RequestMapping("/departamentos")
 public class ControllerDepartamentos {
     @Autowired
     RepositoryDepartamentos repositoryDepartamentos;
     
     @GetMapping()
-    public List<Object> list() {
-        return null;
+    public List<Departamento> list() {
+        return repositoryDepartamentos.findAll();
     }
     
     @GetMapping("/{id}")

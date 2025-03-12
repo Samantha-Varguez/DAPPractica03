@@ -1,5 +1,6 @@
 package org.uv.demo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +23,8 @@ public class Empleado implements Serializable {
               sequenceName = "empleados_clave_seq", 
               initialValue=1, 
               allocationSize=1)
-            
+           
+    @Column
     Long clave;
     @Column
     String nombre;
@@ -32,9 +34,8 @@ public class Empleado implements Serializable {
     String telefono;
 
    
-    
     @ManyToOne
-    @JoinColumn(name = "clave",  insertable = false, updatable = false)
+    @JoinColumn(name = "depto_id")
     private Departamento depto;
     
     public Long getClave() {

@@ -1,8 +1,10 @@
-
 package org.uv.demo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,22 +17,24 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "departamentos")
 public class Departamento implements Serializable {
-    
+
     @Id
     @GeneratedValue(
-            generator="departamentos_clave_seq", 
+            generator = "departamentos_clave_seq",
             strategy = GenerationType.SEQUENCE)
-      @SequenceGenerator(name="departamentos_clave_seq", 
-              sequenceName = "departamentos_clave_seq", 
-              initialValue=1, 
-              allocationSize=1)
-    
+    @SequenceGenerator(name = "departamentos_clave_seq",
+            sequenceName = "departamentos_clave_seq",
+            initialValue = 1,
+            allocationSize = 1)
+
+    @Column
     private Long clave;
+    @Column
     private String nombre;
-    
-    @OneToMany
-    @JoinColumn(name = "clave")
-    private List <Empleado> lstEmpleados;
+
+    @OneToMany(mappedBy = "depto", cascade = CascadeType.ALL, orphanRemoval = false)
+    @JsonIgnore
+    private List<Empleado> lstEmpleados;
 
     public Long getClave() {
         return clave;
@@ -47,7 +51,13 @@ public class Departamento implements Serializable {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    
-    
-    
+
+    public List<Empleado> getLstEmpleados() {
+        return lstEmpleados;
+    }
+
+    public void setLstEmpleados(List<Empleado> lstEmpleados) {
+        this.lstEmpleados = lstEmpleados;
+    }
+
 }

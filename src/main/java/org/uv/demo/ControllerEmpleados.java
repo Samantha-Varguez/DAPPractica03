@@ -16,36 +16,37 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 // hace que se cree el rest controller para que se hagan las operaciones pack de invocacion de rest api
+
 @RestController
 @RequestMapping("/empleados")
 
 public class ControllerEmpleados {
-     // singleton genera una variable de repository empleado, nosotros no instanciamos el repositorio sino spring boot lo hace 
+    // singleton genera una variable de repository empleado, nosotros no instanciamos el repositorio sino spring boot lo hace 
+
     @Autowired
-RepositoryEmpleados repositoryEmpleado;
-    
+    RepositoryEmpleados repositoryEmpleado;
+
     @Autowired
-RepositoryDepartamentos repositoryDepartamento;
-    
-    
-    
+    RepositoryDepartamentos repositoryDepartamento;
+
     // lo responde get 
     @GetMapping()
     public List<Empleado> list() {
         return repositoryEmpleado.findAll();
     }
-    
+
     // regresa respuesta de entidad
     // optional es tema de hibernate con jpa, por si no regresa algo
     @GetMapping("/{id}")
     public ResponseEntity<Empleado> get(@PathVariable long id) {
-        
-       Optional<Empleado> emp = repositoryEmpleado.findById(id);
-       if (!emp.isPresent()){
-           return ResponseEntity.notFound().build();
-       }
+
+        Optional<Empleado> emp = repositoryEmpleado.findById(id);
+        if (!emp.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(emp.get());
     }
+
     // query path 
     // terminar put y delete 
     // pathvariable = variable de la ruta. 
@@ -60,41 +61,42 @@ RepositoryDepartamentos repositoryDepartamento;
         empleadoExisted.setNombre(empleado.getNombre());
         empleadoExisted.setTelefono(empleado.getTelefono());
         empleadoExisted.setDireccion(empleado.getDireccion());
-        
+
         repositoryEmpleado.save(empleadoExisted);
-        
-               
+
         return new ResponseEntity<>(empleadoExisted, HttpStatus.OK);
     }
+
     // el request toma y convierte json a Empleado pojo , el api de web service lo hace automaticamente
     @PostMapping
     public ResponseEntity<Empleado> post(@RequestBody Empleado entrada) {
-        Optional<Departamento> depto= 
-                repositoryDepartamento.findById(entrada.getDepto().getClave());
-        if (depto.isPresent()){
-               entrada.setDepto(depto.get());
-                Empleado empNew= repositoryEmpleado.save(entrada);
-               return ResponseEntity.ok(empNew);
-            
+        Optional<Departamento> depto
+                = repositoryDepartamento.findById(entrada.getDepto().getClave());
+        if (depto.isPresent()) {
+            entrada.setDepto(depto.get());
+            Empleado empNew = repositoryEmpleado.save(entrada);
+
+            return ResponseEntity.ok(empNew);
+
         } else {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Empleado> delete(@PathVariable long id) {
         Optional<Empleado> emp = repositoryEmpleado.findById(id);
-        if (!emp.isPresent()){
+        if (!emp.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         repositoryEmpleado.deleteById(id);
-        
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Error message")
     public void handleError() {
     }
-    
+
 }
